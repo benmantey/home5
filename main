@@ -1,0 +1,54 @@
+package main
+
+import (
+	"fmt"
+	"github.com/Knetic/govaluate"
+	"math"
+)
+
+func calculateExpression(expression string) (float64, error) {
+	expr, err := govaluate.NewEvaluableExpression(expression)
+	if err != nil {
+		return 0, err
+	}
+
+	parameters := map[string]interface{}{}
+	result, err := expr.Evaluate(parameters)
+	if err != nil {
+		return 0, err
+	}
+
+	if value, ok := result.(float64); ok {
+		return value, nil
+	}
+
+	return 0, fmt.Errorf("unable to calculate expression")
+}
+
+func main() {
+	expression1 := "2 + 3 * 5"
+	expression2 := "(10 - 5) / 2"
+	expression3 := "1 / 0"
+
+	result1, err1 := calculateExpression(expression1)
+	result2, err2 := calculateExpression(expression2)
+	result3, err3 := calculateExpression(expression3)
+
+	if err1 == nil {
+		fmt.Println(result1) // Output: 17
+	} else {
+		fmt.Println("Error:", err1)
+	}
+
+	if err2 == nil {
+		fmt.Println(result2) // Output: 2.5
+	} else {
+		fmt.Println("Error:", err2)
+	}
+
+	if err3 == nil {
+		fmt.Println(result3) // Output: +Inf
+	} else {
+		fmt.Println("Error:", err3)
+	}
+}
